@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -53,6 +53,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             color: var(--text-on-light); /* Text inside cards black */
+            text-align: center; /* Centered text for cards */
         }
         .card:hover {
             transform: translateY(-5px);
@@ -305,7 +306,8 @@
 
     <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 p-4 transition-all duration-300">
         <div class="container mx-auto flex justify-between items-center">
-            <div class="text-2xl font-bold text-blue-700">BMP</div> <div class="space-x-4 hidden md:flex">
+            <div class="text-2xl font-bold text-blue-700">BMP</div>
+            <div class="space-x-4 hidden md:flex">
                 <a href="#inicio" class="nav-link px-3 py-2 text-sm font-medium">Inicio</a>
                 <a href="#desafio" class="nav-link px-3 py-2 text-sm font-medium">Desafío</a>
                 <a href="#solucion" class="nav-link px-3 py-2 text-sm font-medium">Solución</a>
@@ -349,33 +351,27 @@
                 La gestión actual de camas en el hospital presenta varias áreas críticas que impactan la eficiencia operativa y la calidad de la atención al paciente. Identificar estos desafíos es el primer paso hacia una transformación significativa.
             </p>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="card p-6 text-left">
-                    <div class="text-5xl mb-4 accent-blue-light">👥</div>
+                <div class="card p-6"> <div class="text-5xl mb-4 accent-blue-light">👥</div>
                     <h3 class="text-xl font-semibold text-blue-700 mb-2">Coordinación Fragmentada de Movimientos</h3>
                     <p class="text-gray-600 text-sm">La ausencia de un canal único obliga a convocar reuniones físicas periódicas entre unidades, lo que retrasa la toma de decisiones y la asignación de camas.</p>
                 </div>
-                <div class="card p-6 text-left">
-                    <div class="text-5xl mb-4 accent-blue-light">📝📞</div>
+                <div class="card p-6"> <div class="text-5xl mb-4 accent-blue-light">📝📞</div>
                     <h3 class="text-xl font-semibold text-blue-700 mb-2">Dependencia de Procesos Manuales y Comunicaciones Ad Hoc</h3>
                     <p class="text-gray-600 text-sm">Los responsables de cada servicio intercambian información por llamadas, correos o mensajería instantánea, aumentando el riesgo de pérdidas de datos y malentendidos.</p>
                 </div>
-                <div class="card p-6 text-left">
-                    <div class="text-5xl mb-4 accent-blue-light">📉🛏️</div>
+                <div class="card p-6"> <div class="text-5xl mb-4 accent-blue-light">📉🛏️</div>
                     <h3 class="text-xl font-semibold text-blue-700 mb-2">Gestión Reactiva de Altas Médicas</h3>
                     <p class="text-gray-600 text-sm">No hay un mecanismo automatizado que anticipe las fechas de alta ni reserve camas de manera proactiva, provocando congestión cuando no hay previsión.</p>
                 </div>
-                <div class="card p-6 text-left">
-                    <div class="text-5xl mb-4 accent-blue-light">❓📊</div>
+                <div class="card p-6"> <div class="text-5xl mb-4 accent-blue-light">❓📊</div>
                     <h3 class="text-xl font-semibold text-blue-700 mb-2">Visibilidad Parcial de la Capacidad Real</h3>
                     <p class="text-gray-600 text-sm">Sin un dashboard unificado, las Subdirecciones y la Unidad de Gestión de Camas carecen de panorama global sobre ocupación y disponibilidad, dificultando la priorización y reasignación ágil de recursos.</p>
                 </div>
-                <div class="card p-6 text-left">
-                    <div class="text-5xl mb-4 accent-blue-light">🤝</div>
+                <div class="card p-6"> <div class="text-5xl mb-4 accent-blue-light">🤝</div>
                     <h3 class="text-xl font-semibold text-blue-700 mb-2">Desalineación de Roles y Responsabilidades</h3>
                     <p class="text-gray-600 text-sm">En reuniones de coordinación no siempre están presentes todos los actores clave, lo que genera decisiones parciales y retrabajo operativo.</p>
                 </div>
-                <div class="card p-6 text-left">
-                    <div class="text-5xl mb-4 accent-blue-light">🚨</div>
+                <div class="card p-6"> <div class="text-5xl mb-4 accent-blue-light">🚨</div>
                     <h3 class="text-xl font-semibold text-blue-700 mb-2">Ineficiencia en la Gestión de Excepciones</h3>
                     <p class="text-gray-600 text-sm">Situaciones como emergencias o cambios de último minuto requieren llamadas urgentes y replanificaciones manuales, con altos tiempos de respuesta.</p>
                 </div>
@@ -563,8 +559,7 @@
             <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
                 Presentamos una hoja de ruta clara y concisa para la implementación de la BMP, estimada en 6 meses. Cada fase tiene objetivos y entregables definidos para asegurar un progreso medible y eficiente.
             </p>
-            <div class="max-w-3xl mx-auto">
-                <div id="timelineContainer">
+            <div class="card p-8 max-w-3xl mx-auto bg-white"> <div id="timelineContainer">
                     <div class="timeline-stage" data-stage="fase1">
                         <h4 class="text-xl font-semibold text-black flex items-center justify-center w-full">
                             Fase 1: Diseño Conceptual <span class="text-sm font-normal text-black ml-2">(2 Semanas)</span>
@@ -643,8 +638,7 @@
         </section>
 
         <section id="conclusion" class="py-16 bg-white text-black">
-            <div class="max-w-3xl mx-auto text-center">
-                <h2 class="text-3xl font-bold mb-6">Conclusión<br>Juntos Hacia el Futuro de la Gestión Hospitalaria</h2>
+            <div class="card p-8 max-w-3xl mx-auto bg-white"> <h2 class="text-3xl font-bold mb-6">Conclusión<br>Juntos Hacia el Futuro de la Gestión Hospitalaria</h2>
                 <p class="text-xl mb-8">
                     "La Bed Management Platform no es solo una herramienta tecnológica; es una inversión en la calidad de atención, la optimización de nuestros recursos y el fortalecimiento de la posición del Hospital Clínico Félix Bulnes como referente en innovación."
                 </p>
