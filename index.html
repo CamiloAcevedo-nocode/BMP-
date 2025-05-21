@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -127,7 +127,7 @@
 
         /* Estilos para el flujo de trabajo colapsable */
         .workflow-stage {
-            cursor: pointer;
+            cursor: pointer; /* Add cursor pointer to indicate clickability */
             border: 1px solid var(--border-light); /* Light border on white background */
             padding: 1rem;
             margin-bottom: 0.75rem;
@@ -153,25 +153,22 @@
             color: white; /* White text for active stage */
         }
         .workflow-details {
-            display: none;
-            padding: 1.5rem;
+            padding: 0 1.5rem; /* Set padding to 0 when collapsed */
             margin-top: 0.5rem;
             background-color: #F8F8F8; /* Very light gray for details */
             border-radius: 0.5rem;
             border: 1px dashed var(--primary-blue-light);
             overflow: hidden;
-            max-height: 0;
-            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            max-height: 0px; /* Control collapse/expand with max-height, explicitly 0px */
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out; /* Transition max-height and padding */
             color: var(--text-on-light); /* Black text for details */
-            /* Added for centering details content */
             max-width: 500px; /* Adjust as needed */
             margin-left: auto;
             margin-right: auto;
         }
         .workflow-details.active {
-            display: block;
-            max-height: 1200px;
-            padding: 1.5rem;
+            max-height: 1200px; /* Sufficiently large max-height for content */
+            padding: 1.5rem; /* Restore padding when active */
         }
         .workflow-details img {
             max-width: 100%;
@@ -179,6 +176,7 @@
             margin-bottom: 1.5rem;
             border-radius: 0.5rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            cursor: zoom-in; /* Indicate clickable image */
         }
 
         /* Estilos del Diagrama Lineal */
@@ -262,7 +260,7 @@
 
         /* Estilos para las fases del plan de acción colapsables */
         .timeline-stage {
-            cursor: pointer;
+            cursor: pointer; /* Add cursor pointer to indicate clickability */
             border: 1px solid var(--border-light); /* Light border on white background */
             padding: 1rem;
             margin-bottom: 0.75rem;
@@ -284,21 +282,75 @@
             color: white; /* White text for active stage */
         }
         .timeline-details {
-            display: none;
-            padding: 1.5rem;
+            padding: 0 1.5rem; /* Set padding to 0 when collapsed */
             margin-top: 0.5rem;
             background-color: #F8F8F8; /* Very light gray for details */
             border-radius: 0.5rem;
             border: 1px dashed var(--primary-blue-light);
             overflow: hidden;
-            max-height: 0;
-            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            max-height: 0px; /* Control collapse/expand with max-height, explicitly 0px */
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out; /* Transition max-height and padding */
             color: var(--text-on-light); /* Black text for details */
         }
         .timeline-details.active {
+            max-height: 500px; /* Sufficiently large max-height for content */
+            padding: 1.5rem; /* Restore padding when active */
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            margin: auto;
             display: block;
-            max-height: 500px; /* Suficiente para el texto */
-            padding: 1.5rem;
+            width: 90%;
+            max-width: 900px;
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+            transform: scale(0.8);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .modal-close:hover,
+        .modal-close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -559,7 +611,8 @@
             <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
                 Presentamos una hoja de ruta clara y concisa para la implementación de la BMP, estimada en 6 meses. Cada fase tiene objetivos y entregables definidos para asegurar un progreso medible y eficiente.
             </p>
-            <div class="card p-8 max-w-3xl mx-auto bg-white"> <div id="timelineContainer">
+            <div class="card p-8 max-w-3xl mx-auto bg-white">
+                <div id="timelineContainer">
                     <div class="timeline-stage" data-stage="fase1">
                         <h4 class="text-xl font-semibold text-black flex items-center justify-center w-full">
                             Fase 1: Diseño Conceptual <span class="text-sm font-normal text-black ml-2">(2 Semanas)</span>
@@ -638,7 +691,8 @@
         </section>
 
         <section id="conclusion" class="py-16 bg-white text-black">
-            <div class="card p-8 max-w-3xl mx-auto bg-white"> <h2 class="text-3xl font-bold mb-6">Conclusión<br>Juntos Hacia el Futuro de la Gestión Hospitalaria</h2>
+            <div class="card p-8 max-w-3xl mx-auto bg-white">
+                <h2 class="text-3xl font-bold mb-6">Conclusión<br>Juntos Hacia el Futuro de la Gestión Hospitalaria</h2>
                 <p class="text-xl mb-8">
                     "La Bed Management Platform no es solo una herramienta tecnológica; es una inversión en la calidad de atención, la optimización de nuestros recursos y el fortalecimiento de la posición del Hospital Clínico Félix Bulnes como referente en innovación."
                 </p>
@@ -656,174 +710,229 @@
         <p>&copy; 2024 Hospital Clínico Félix Bulnes. Proyecto Bed Management Platform.</p>
     </footer>
 
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
     <script>
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth'
+        document.addEventListener('DOMContentLoaded', (event) => {
+            console.log('DOM completamente cargado y parseado.');
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                    const mobileMenu = document.getElementById('mobileMenu');
+                    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    console.log('Clic en botón de menú móvil');
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+            
+            // Workflow stages (Flujo de Trabajo Optimizado) expand/collapse
+            const workflowStages = document.querySelectorAll('.workflow-stage');
+            console.log('Workflow stages found:', workflowStages.length);
+            workflowStages.forEach(stage => {
+                stage.addEventListener('click', () => {
+                    console.log('Clic en etapa de flujo:', stage.dataset.stage);
+                    const stageId = stage.dataset.stage;
+                    const detailsElement = document.getElementById(`details-${stageId}`);
+                    console.log('Details element for workflow stage:', detailsElement);
+
+                    // Close other open workflow details
+                    document.querySelectorAll('.workflow-details.active').forEach(activeDetail => {
+                        if (activeDetail !== detailsElement) {
+                            console.log('Collapsing other workflow detail:', activeDetail.id);
+                            activeDetail.classList.remove('active');
+                            activeDetail.style.maxHeight = '0px'; // Explicitly set to 0px
+                            activeDetail.style.padding = '0 1.5rem';
+                        }
                     });
-                }
-                if (document.getElementById('mobileMenu').classList.contains('hidden') === false) {
-                    document.getElementById('mobileMenu').classList.add('hidden');
-                }
-            });
-        });
-
-        const mobileMenuButton = document.getElementById('mobileMenuButton');
-        const mobileMenu = document.getElementById('mobileMenu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        // Removed the scroll event listener for navbar background change
-        // const navbar = document.getElementById('navbar');
-        // window.onscroll = () => {
-        //     if (window.scrollY > 50) {
-        //         navbar.classList.add('nav-scrolled');
-        //     } else {
-        //         navbar.classList.remove('nav-scrolled');
-        //     }
-        // };
-
-        const workflowStages = document.querySelectorAll('.workflow-stage');
-        workflowStages.forEach(stage => {
-            stage.addEventListener('click', () => {
-                const stageId = stage.dataset.stage;
-                const detailsElement = document.getElementById(`details-${stageId}`);
-                
-                document.querySelectorAll('.workflow-details.active').forEach(activeDetail => {
-                    if (activeDetail !== detailsElement) {
-                        activeDetail.classList.remove('active');
-                        activeDetail.style.maxHeight = null;
-                    }
-                });
-                 document.querySelectorAll('.workflow-stage.active').forEach(activeStage => {
-                    if (activeStage !== stage) {
-                        activeStage.classList.remove('active');
-                    }
-                });
-
-                stage.classList.toggle('active');
-                if (detailsElement.classList.contains('active')) {
-                    detailsElement.classList.remove('active');
-                    detailsElement.style.maxHeight = null;
-                } else {
-                    detailsElement.classList.add('active');
-                    detailsElement.style.maxHeight = detailsElement.scrollHeight + "px";
-                }
-            });
-        });
-
-        // Script para la interactividad del plan de acción
-        const timelineStages = document.querySelectorAll('.timeline-stage');
-        timelineStages.forEach(stage => {
-            stage.addEventListener('click', () => {
-                const stageId = stage.dataset.stage;
-                const detailsElement = document.getElementById(`details-${stageId}`);
-                
-                document.querySelectorAll('.timeline-details.active').forEach(activeDetail => {
-                    if (activeDetail !== detailsElement) {
-                        activeDetail.classList.remove('active');
-                        activeDetail.style.maxHeight = null;
-                    }
-                });
-                 document.querySelectorAll('.timeline-stage.active').forEach(activeStage => {
-                    if (activeStage !== stage) {
-                        activeStage.classList.remove('active');
-                    }
-                });
-
-                stage.classList.toggle('active');
-                if (detailsElement.classList.contains('active')) {
-                    detailsElement.classList.remove('active');
-                    detailsElement.style.maxHeight = null;
-                } else {
-                    detailsElement.classList.add('active');
-                    detailsElement.style.maxHeight = detailsElement.scrollHeight + "px";
-                }
-            });
-        });
-
-
-        const kpiCtx = document.getElementById('kpiChart').getContext('2d');
-        const kpiChart = new Chart(kpiCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Tiempo Asignación Cama', 'Cumplimiento Plazos Alta', 'Tiempo Traslados Internos'],
-                datasets: [{
-                    label: 'Mejora Esperada (%)',
-                    data: [30, 90, 50],
-                    backgroundColor: [
-                        'rgba(0, 123, 255, 0.7)', /* Tono azul para las barras */
-                        'rgba(0, 123, 255, 0.7)',
-                        'rgba(0, 123, 255, 0.7)'
-                    ],
-                    borderColor: [
-                        'rgba(0, 123, 255, 1)', /* Azul más oscuro para los bordes */
-                        'rgba(0, 123, 255, 1)',
-                        'rgba(0, 123, 255, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Porcentaje de Mejora / Cumplimiento',
-                            color: '#000000' /* Color de texto para el título del eje Y (negro) */
-                        },
-                        ticks: {
-                            callback: function(value) {
-                                return value + "%"
-                            },
-                            color: '#000000' /* Color de texto para las etiquetas del eje Y (negro) */
-                        },
-                        grid: {
-                            display: false /* Eliminar las líneas de la cuadrícula del eje Y */
+                    // Deactivate other active workflow stages
+                    document.querySelectorAll('.workflow-stage.active').forEach(activeStage => {
+                        if (activeStage !== stage) {
+                            console.log('Deactivating other workflow stage:', activeStage.dataset.stage);
+                            activeStage.classList.remove('active');
                         }
-                    },
-                    x: {
-                        ticks: {
-                            color: '#000000' /* Color de texto para las etiquetas del eje X (negro) */
-                        },
-                        grid: {
-                            display: false /* Eliminar las líneas de la cuadrícula del eje X */
-                        }
+                    });
+
+                    // Toggle current stage and details
+                    stage.classList.toggle('active');
+                    if (detailsElement.classList.contains('active')) { // Check if it's now active
+                        console.log('Expanding workflow detail:', detailsElement.id, 'scrollHeight:', detailsElement.scrollHeight);
+                        detailsElement.style.maxHeight = detailsElement.scrollHeight + "px"; // Expand
+                        detailsElement.style.padding = '1.5rem'; // Restore padding
+                    } else {
+                        console.log('Collapsing workflow detail:', detailsElement.id);
+                        detailsElement.style.maxHeight = '0px'; // Collapse
+                        detailsElement.style.padding = '0 1.5rem'; // Collapse padding
                     }
+                });
+            });
+
+            // Timeline stages (Plan de Acción y Cronograma) expand/collapse
+            const timelineStages = document.querySelectorAll('.timeline-stage');
+            console.log('Timeline stages found:', timelineStages.length);
+            timelineStages.forEach(stage => {
+                stage.addEventListener('click', () => {
+                    console.log('Clic en etapa de cronograma:', stage.dataset.stage);
+                    const stageId = stage.dataset.stage;
+                    const detailsElement = document.getElementById(`details-${stageId}`);
+                    console.log('Details element for timeline stage:', detailsElement);
+
+                    // Close other open timeline details
+                    document.querySelectorAll('.timeline-details.active').forEach(activeDetail => {
+                        if (activeDetail !== detailsElement) {
+                            console.log('Collapsing other timeline detail:', activeDetail.id);
+                            activeDetail.classList.remove('active');
+                            activeDetail.style.maxHeight = '0px'; // Explicitly set to 0px
+                            activeDetail.style.padding = '0 1.5rem';
+                        }
+                    });
+                    // Deactivate other active timeline stages
+                    document.querySelectorAll('.timeline-stage.active').forEach(activeStage => {
+                        if (activeStage !== stage) {
+                            console.log('Deactivating other timeline stage:', activeStage.dataset.stage);
+                            activeStage.classList.remove('active');
+                        }
+                    });
+
+                    // Toggle current stage and details
+                    stage.classList.toggle('active');
+                    if (detailsElement.classList.contains('active')) { // Check if it's now active
+                        console.log('Expanding timeline detail:', detailsElement.id, 'scrollHeight:', detailsElement.scrollHeight);
+                        detailsElement.style.maxHeight = detailsElement.scrollHeight + "px"; // Expand
+                        detailsElement.style.padding = '1.5rem'; // Restore padding
+                    } else {
+                        console.log('Collapsing timeline detail:', detailsElement.id);
+                        detailsElement.style.maxHeight = '0px'; // Collapse
+                        detailsElement.style.padding = '0 1.5rem'; // Collapse padding
+                    }
+                });
+            });
+
+            // Chart.js initialization
+            const kpiCtx = document.getElementById('kpiChart').getContext('2d');
+            const kpiChart = new Chart(kpiCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Tiempo Asignación Cama', 'Cumplimiento Plazos Alta', 'Tiempo Traslados Internos'],
+                    datasets: [{
+                        label: 'Mejora Esperada (%)',
+                        data: [30, 90, 50],
+                        backgroundColor: [
+                            'rgba(0, 123, 255, 0.7)',
+                            'rgba(0, 123, 255, 0.7)',
+                            'rgba(0, 123, 255, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(0, 123, 255, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
                 },
-                plugins: {
-                    legend: {
-                        display: false
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Porcentaje de Mejora / Cumplimiento',
+                                color: '#000000'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + "%"
+                                },
+                                color: '#000000'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#000000'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
                     },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed.y !== null) {
-                                    if (context.label === 'Cumplimiento Plazos Alta') {
-                                        label += context.parsed.y + '% (Meta)';
-                                    } else {
-                                        label += context.parsed.y + '% Reducción';
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
                                     }
+                                    if (context.parsed.y !== null) {
+                                        if (context.label === 'Cumplimiento Plazos Alta') {
+                                            label += context.parsed.y + '% (Meta)';
+                                        } else {
+                                            label += context.parsed.y + '% Reducción';
+                                        }
+                                    }
+                                    return label;
                                 }
-                                return label;
                             }
                         }
                     }
                 }
-            }
+            });
+
+            // Modal functionality for images
+            const imageModal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalClose = document.getElementsByClassName('modal-close')[0];
+            console.log('Modal elements found:', imageModal, modalImage, modalClose);
+
+            document.querySelectorAll('.workflow-details img').forEach(img => {
+                img.addEventListener('click', function(event) { // Added event parameter
+                    event.stopPropagation(); // Prevent click from bubbling to parent (workflow-details)
+                    console.log('Clic en imagen de flujo. Imagen src:', this.src);
+                    imageModal.classList.add('show');
+                    modalImage.src = this.src;
+                });
+            });
+
+            modalClose.addEventListener('click', function() {
+                console.log('Clic en cerrar modal');
+                imageModal.classList.remove('show');
+            });
+
+            imageModal.addEventListener('click', function(event) {
+                if (event.target === imageModal) {
+                    console.log('Clic fuera de la imagen en modal. Cerrando modal.');
+                    imageModal.classList.remove('show');
+                }
+            });
         });
     </script>
 </body>
