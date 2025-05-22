@@ -1,697 +1,661 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bed Management Platform: Aplicación Interactiva</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Bed Management Platform (BMP)</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Elecciones de Visualización y Contenido:
-        - Desafío: Grid con iconos Unicode y texto detallado (Informar).
-        - Solución (Diagrama): Diagrama lineal HTML/CSS/Tailwind para mostrar interconexión de áreas con el centro Dashboard (Organizar). Atractivo y moderno.
-        - Flujo Optimizado: Secciones desplegables (HTML/CSS/JS) con descripciones textuales y la imagen de flujo correspondiente para cada etapa (Informar, Organizar).
-        - Beneficios/KPIs: Lista con iconos Unicode. Gráfico de barras (Chart.js) para % mejoras (Comparar, Informar). `maintainAspectRatio: false`, contenedor `div` con `w-full max-w_lg mx-auto h-80 max-h-96`.
-        - Plan de Acción (Timeline): HTML/CSS/Tailwind horizontal (Organizar, Informar).
-        - Justificación: Métodos elegidos por claridad, interactividad sin complejidad excesiva, y cumplimiento de restricciones (NO SVG/Mermaid).
-        -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-blue-dark: #004080; /* Azul oscuro para títulos */
-            --primary-blue-light: #007BFF; /* Azul vibrante */
-            --background-main: #000000; /* Fondo principal de la página (negro) */
-            --background-section: #FFFFFF; /* Fondo de las secciones (blanco) */
-            --background-card: #FFFFFF; /* Fondo de las tarjetas (blanco) */
-            --text-on-dark: #E0E0E0; /* Texto claro para fondos oscuros */
-            --text-on-light: #333333; /* Texto oscuro para fondos claros */
-            --border-light: #CCCCCC; /* Borde claro */
-            --border-dark: #666666; /* Borde más oscuro */
+            --primary-blue: #007bff;
+            --secondary-blue: #e6f2ff;
+            --accent-blue-light: #66b3ff;
+            --text-on-dark: #ffffff;
+            --text-on-light: #333333;
+            --background-light: #f8f9fa;
+            --background-dark: #343a40;
+            --card-background: #ffffff;
+            --border-color: #dee2e6;
         }
 
         body {
-            font-family: 'Open Sans', sans-serif;
-            background-color: var(--background-main); /* Main background black */
-            color: var(--text-on-dark); /* Default text color on black background */
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-light);
+            line-height: 1.6;
+            color: var(--text-on-light);
         }
-        .section-title {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            color: var(--primary-blue-dark); /* Titles in dark blue */
-        }
-        .nav-link {
-            font-family: 'Lato', sans-serif;
-            transition: color 0.3s ease, border-bottom 0.3s ease;
-            color: #FFFFFF; /* Nav links white for visibility */
-        }
-        .nav-link:hover, .nav-link.active {
-            color: var(--primary-blue-light); /* Blue on hover/active */
-            border-bottom: 2px solid var(--primary-blue-light);
-        }
-        .card {
-            background-color: var(--background-card); /* Cards white */
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            color: var(--text-on-light); /* Text inside cards black */
-            text-align: center; /* Centered text for cards */
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-        .button-primary {
-            background-color: var(--primary-blue-light);
-            color: white;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            border-radius: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-        }
-        .button-primary:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }
-        .accent-blue-dark { color: var(--primary-blue-dark); }
-        .accent-blue-light { color: var(--primary-blue-light); }
 
-        .timeline-item {
-            position: relative;
-            padding-bottom: 2rem;
-            padding-left: 2.5rem;
-        }
-        .timeline-item:not(:last-child)::before {
-            content: '';
-            position: absolute;
-            left: 20px;
-            top: 20px;
-            bottom: 0;
-            width: 2px;
-            background-color: var(--primary-blue-light);
-        }
-        .timeline-icon {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            background-color: var(--primary-blue-light);
-            color: white;
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-            background-color: white; /* Fondo del gráfico blanco */
-            border-radius: 0.5rem;
-            padding: 1rem;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-        /* Navbar always black */
+        /* Navbar styles */
         #navbar {
-            background-color: #000000; /* Fondo negro fijo para la barra de navegación */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Sombra para que se destaque */
+            background-color: #000000; /* Fondo negro para la barra de navegación */
+            color: var(--text-on-dark); /* Texto blanco para la barra de navegación */
         }
 
-        /* Estilos para el flujo de trabajo colapsable */
-        .workflow-stage {
-            cursor: pointer; /* Add cursor pointer to indicate clickability */
-            border: 1px solid var(--border-light); /* Light border on white background */
-            padding: 1rem;
-            margin-bottom: 0.75rem;
-            border-radius: 0.5rem;
-            background-color: var(--background-section); /* White background for stages */
-            color: var(--text-on-light); /* Black text for stages */
-            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            /* Added for centering */
-            max-width: 400px; /* Limit width to make centering more noticeable */
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .workflow-stage:hover {
-            transform: translateY(-3px);
-            background-color: #F0F0F0; /* Slightly lighter white on hover */
-        }
-        .workflow-stage.active {
-            border-color: var(--primary-blue-light);
-            background-color: var(--primary-blue-dark); /* Dark blue for active stage */
-            color: white; /* White text for active stage */
-        }
-        .workflow-details {
-            padding: 0 1.5rem; /* Set padding to 0 when collapsed */
-            margin-top: 0.5rem;
-            background-color: #F8F8F8; /* Very light gray for details */
-            border-radius: 0.5rem;
-            border: 1px dashed var(--primary-blue-light);
-            overflow: hidden;
-            max-height: 0px; /* Control collapse/expand with max-height, explicitly 0px */
-            transition: max-height 0.5s ease-out, padding 0.5s ease-out; /* Transition max-height and padding */
-            color: var(--text-on-light); /* Black text for details */
-            max-width: 500px; /* Adjust as needed */
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .workflow-details.active {
-            max-height: 1200px; /* Sufficiently large max-height for content */
-            padding: 1.5rem; /* Restore padding when active */
-        }
-        .workflow-details img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            cursor: zoom-in; /* Indicate clickable image */
-        }
-
-        /* Estilos del Diagrama Lineal */
-        .linear-diagram-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2rem;
-            margin-top: 3rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .linear-node {
-            background-color: var(--background-card); /* Nodes white */
-            border: 1px solid var(--primary-blue-light); /* Border blue */
-            border-radius: 0.75rem;
-            padding: 1.2rem 1.8rem;
-            text-align: center;
-            font-weight: 600;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            width: fit-content;
-            min-width: 180px;
-            color: var(--primary-blue-dark); /* Text in nodes dark blue */
-        }
-        .linear-node.center-dashboard {
-            background-color: var(--primary-blue-light); /* Dashboard in vibrant blue */
-            color: white;
-            border-radius: 9999px;
-            padding: 1.8rem 2.5rem;
-            font-size: 1.3rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        }
-        .linear-node:hover {
-            transform: translateY(-7px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        .linear-node.center-dashboard:hover {
-            transform: translateY(-10px) scale(1.02);
-        }
-        .linear-arrow {
-            width: 3px;
-            height: 40px;
-            background-color: var(--primary-blue-light); /* Arrows blue */
+        .nav-link {
+            color: var(--text-on-dark); /* Texto blanco para los enlaces de navegación */
             position: relative;
-            border-radius: 1px;
+            padding-bottom: 5px;
+            transition: color 0.3s ease;
         }
-        .linear-arrow::after {
+
+        .nav-link::after {
             content: '';
             position: absolute;
             width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 8px solid var(--primary-blue-light);
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        /* Tailwind classes overrides for the new theme */
-        .bg-blue-50 { /* Used for sections that should now be white */
-            background-color: var(--background-section); /* White */
-        }
-        .text-blue-600 { /* For icons in cards */
-            color: var(--primary-blue-light);
-        }
-        .text-blue-700 { /* For card titles */
-            color: var(--primary-blue-dark);
-        }
-        .text-gray-500, .text-gray-600, .text-gray-700 {
-            color: var(--text-on-light); /* Black text on light backgrounds */
-        }
-        .text-blue-800 { /* For italic text in implementacion section */
-            color: var(--text-on-light); /* Black text on light background */
-        }
-        .footer {
-            background-color: #000000;
-            color: var(--text-medium);
-        }
-
-        /* Estilos para las fases del plan de acción colapsables */
-        .timeline-stage {
-            cursor: pointer; /* Add cursor pointer to indicate clickability */
-            border: 1px solid var(--border-light); /* Light border on white background */
-            padding: 1rem;
-            margin-bottom: 0.75rem;
-            border-radius: 0.5rem;
-            background-color: var(--background-section); /* White background for stages */
-            color: var(--text-on-light); /* Black text for stages */
-            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .timeline-stage:hover {
-            transform: translateY(-3px);
-            background-color: #F0F0F0; /* Slightly lighter white on hover */
-        }
-        .timeline-stage.active {
-            border-color: var(--primary-blue-light);
-            background-color: var(--primary-blue-dark); /* Dark blue for active stage */
-            color: white; /* White text for active stage */
-        }
-        .timeline-details {
-            padding: 0 1.5rem; /* Set padding to 0 when collapsed */
-            margin-top: 0.5rem;
-            background-color: #F8F8F8; /* Very light gray for details */
-            border-radius: 0.5rem;
-            border: 1px dashed var(--primary-blue-light);
-            overflow: hidden;
-            max-height: 0px; /* Control collapse/expand with max-height, explicitly 0px */
-            transition: max-height 0.5s ease-out, padding 0.5s ease-out; /* Transition max-height and padding */
-            color: var(--text-on-light); /* Black text for details */
-        }
-        .timeline-details.active {
-            max-height: 500px; /* Sufficiently large max-height for content */
-            padding: 1.5rem; /* Restore padding when active */
-        }
-
-        /* Modal styles */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1000; /* Sit on top */
+            height: 2px;
+            bottom: 0;
             left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+            background-color: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue-light));
+            color: var(--text-on-dark);
+            padding-top: 8rem;
+            padding-bottom: 8rem;
+            text-align: center;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: var(--text-on-light); /* Texto dentro de las tarjetas negro */
+            text-align: center; /* Texto centrado para las tarjetas */
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .accent-blue-light {
+            color: var(--accent-blue-light);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Styles for collapsible user roles */
+        .user-collapsible-stage {
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1rem;
+            padding: 1.5rem;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-collapsible-stage:hover {
+            background-color: var(--secondary-blue);
+        }
+
+        .user-collapsible-stage.active {
+            background-color: var(--primary-blue);
+            color: var(--text-on-dark);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-collapsible-stage.active h4 {
+            color: var(--text-on-dark);
+        }
+
+        .user-collapsible-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            background-color: var(--background-light);
+            border-radius: 8px;
+            padding: 0 1.5rem;
+            margin-top: -1rem;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .user-collapsible-details.active {
+            max-height: 500px; /* Ajustar según sea necesario */
+            padding: 1.5rem;
+        }
+
+        /* Styles for timeline stages (collapsible) - unchanged */
+        .timeline-stage {
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1rem;
+            padding: 1.5rem;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-stage:hover {
+            background-color: var(--secondary-blue);
+        }
+
+        .timeline-stage.active {
+            background-color: var(--primary-blue);
+            color: var(--text-on-dark);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline-stage.active h4 {
+            color: var(--text-on-dark);
+        }
+
+        .timeline-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            background-color: var(--background-light);
+            border-radius: 8px;
+            padding: 0 1.5rem;
+            margin-top: -1rem;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .timeline-details.active {
+            max-height: 500px; /* Ajustar según sea necesario */
+            padding: 1.5rem;
+        }
+
+        .footer {
+            background-color: var(--background-dark);
+            color: var(--text-on-dark);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2rem;
+            }
+            .hero-section {
+                padding-top: 6rem;
+                padding-bottom: 6rem;
+            }
+        }
+
+        /* New styles for circular workflow steps */
+        .workflow-step-circle {
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            height: 120px; /* Tamaño del círculo */
+            width: 120px; /* Tamaño del círculo */
+            border-radius: 50%; /* Hacerlo circular */
+            background-color: var(--primary-blue); /* Color de fondo */
+            color: var(--text-on-dark); /* Color del texto */
+            text-align: center;
+            font-size: 0.95rem; /* Tamaño de fuente */
+            font-weight: 600;
+            padding: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+            flex-shrink: 0; /* Evitar que se encoja */
+            line-height: 1.3; /* Ajuste de línea para texto en varias líneas */
         }
 
-        .modal.show {
-            display: flex;
-            opacity: 1;
+        .workflow-step-circle:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .modal-content {
-            margin: auto;
-            display: block;
-            width: 90%;
-            max-width: 900px;
-            border-radius: 0.75rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.7);
-            transform: scale(0.8);
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .modal.show .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 35px;
-            color: #f1f1f1;
-            font-size: 40px;
-            font-weight: bold;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-
-        .modal-close:hover,
-        .modal-close:focus {
-            color: #bbb;
-            text-decoration: none;
-            cursor: pointer;
+        /* Adjust circle size for smaller screens */
+        @media (max-width: 640px) {
+            .workflow-step-circle {
+                height: 100px;
+                width: 100px;
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
-
-    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 p-4 transition-all duration-300">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="text-2xl font-bold text-blue-700">BMP</div>
-            <div class="space-x-4 hidden md:flex">
-                <a href="#inicio" class="nav-link px-3 py-2 text-sm font-medium">Inicio</a>
-                <a href="#desafio" class="nav-link px-3 py-2 text-sm font-medium">Desafío</a>
-                <a href="#solucion" class="nav-link px-3 py-2 text-sm font-medium">Solución</a>
-                <a href="#flujo" class="nav-link px-3 py-2 text-sm font-medium">Flujo</a>
-                <a href="#beneficios" class="nav-link px-3 py-2 text-sm font-medium">Beneficios</a>
-                <a href="#implementacion" class="nav-link px-3 py-2 text-sm font-medium">Implementación</a>
-                <a href="#plan" class="nav-link px-3 py-2 text-sm font-medium">Plan</a>
-                <a href="#accion" class="nav-link px-3 py-2 text-sm font-medium">Acción</a>
-                <a href="#conclusion" class="nav-link px-3 py-2 text-sm font-medium">Conclusión</a>
+<body class="font-sans">
+    <div class="min-h-screen flex flex-col">
+        <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 p-4 transition-all duration-300">
+            <div class="container mx-auto flex justify-between items-center">
+                <img src="https://i.imgur.com/iKfYdtR.png" alt="BMP Logo" class="h-10 w-auto rounded-full" onerror="this.src='https://placehold.co/40x40/cccccc/333333?text=BMP'">
+                <div class="space-x-4 hidden md:flex">
+                    <a href="#inicio" class="nav-link px-3 py-2 text-sm font-medium">Inicio</a>
+                    <a href="#desafio" class="nav-link px-3 py-2 text-sm font-medium">Desafío</a>
+                    <a href="#solucion" class="nav-link px-3 py-2 text-sm font-medium">Solución</a>
+                    <a href="#impacto" class="nav-link px-3 py-2 text-sm font-medium">Impacto</a>
+                    <a href="#workflow" class="nav-link px-3 py-2 text-sm font-medium">Workflow</a>
+                    <a href="#flujos-detallados" class="nav-link px-3 py-2 text-sm font-medium">Flujos Detallados</a>
+                    <a href="#visualizacion-mejoras" class="nav-link px-3 py-2 text-sm font-medium">Visualización de Mejoras</a>
+                    <a href="#kpis" class="nav-link px-3 py-2 text-sm font-medium">KPIs</a>
+                    <a href="#plan-accion" class="nav-link px-3 py-2 text-sm font-medium">Plan de Acción</a>
+                    <a href="#conclusion" class="nav-link px-3 py-2 text-sm font-medium">Conclusión</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobileMenuButton" class="text-white focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
-            <button id="mobileMenuButton" class="md:hidden text-gray-700 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
-        </div>
-        <div id="mobileMenu" class="hidden md:hidden bg-white shadow-lg rounded-lg mt-2">
-            <a href="#inicio" class="block nav-link px-4 py-2 text-sm">Inicio</a>
-            <a href="#desafio" class="block nav-link px-4 py-2 text-sm">Desafío</a>
-            <a href="#solucion" class="block nav-link px-4 py-2 text-sm">Solución</a>
-            <a href="#flujo" class="block nav-link px-4 py-2 text-sm">Flujo</a>
-            <a href="#beneficios" class="block nav-link px-4 py-2 text-sm">Beneficios</a>
-            <a href="#implementacion" class="block nav-link px-4 py-2 text-sm">Implementación</a>
-            <a href="#plan" class="block nav-link px-4 py-2 text-sm">Plan</a>
-            <a href="#accion" class="block nav-link px-4 py-2 text-sm">Acción</a>
-            <a href="#conclusion" class="block nav-link px-4 py-2 text-sm">Conclusión</a>
-        </div>
-    </nav>
+            <div id="mobileMenu" class="md:hidden mt-4 space-y-2 bg-black rounded-lg shadow-md p-4 hidden">
+                <a href="#inicio" class="block px-3 py-2 text-base font-medium text-white hover:bg-gray-700 rounded-md">Inicio</a>
+                <a href="#desafio" class="block px-3 py-2 text-base font-medium text-white hover:bg-gray-700 rounded-md">Desafío</a>
+                <a href="#solucion" class="block px-3 py-2 text-base font-medium text-white hover:bg-gray-700 rounded-md">Solución</a>
+                <a href="#impacto" class="block px-3 py-2 text-base font-medium text-white hover:bg-gray-700 rounded-md">Impacto</a>
+                <a href="#workflow" class="block px-3 py-2 text-base font-medium text-white hover:bg-gray-700 rounded-md">Workflow</a>
+                <a href="#flujos-detallados" class="block px-3 py-2 text-base font-medium text-white hover:bg-gray-700 rounded-md">Flujos Detallados</a>
+                <a href="#visualizacion-mejoras" class="block px-3 py-2 text-base font-medium text-white hover:bg-gray-700 rounded-md">Visualización de Mejoras</a>
+                <a href="#kpis" class="block px-3 py-2 text-base font-medium text-white hover:bg-gray-700 rounded-md">KPIs</a>
+                <a href="#plan-accion" class="block px-3 py-2 text-base font-medium text-white hover:bg-gray-700 rounded-md">Plan de Acción</a>
+                <a href="#conclusion" class="block px-3 py-2 text-base font-medium text-white hover:bg-gray-700 rounded-md">Conclusión</a>
+            </div>
+        </nav>
 
-    <div class="container mx-auto px-4 pt-20">
-
-        <section id="inicio" class="min-h-screen flex flex-col justify-center items-center text-center py-16">
-            <img src="https://i.imgur.com/iKfYdtR.png" alt="Logo Hospital Clínico Félix Bulnes" class="w-32 h-32 mb-8 rounded-full shadow-lg" onerror="this.src='https://placehold.co/150x150/cccccc/333333?text=Logo+Error'">
-            <h1 class="section-title text-4xl md:text-5xl mb-4">Bed Management Platform</h1>
-            <h2 class="text-xl md:text-2xl text-gray-600 mb-6">Hacia una Gestión de Camas Inteligente y Eficiente</h2>
-            <p class="text-lg text-gray-600 mb-8">Propuesta de Implementación para el Hospital Clínico Félix Bulnes</p>
-             <p class="mt-12 text-gray-500">Desliza para explorar <span class="text-2xl">👇</span></p>
+        <section id="inicio" class="hero-section flex items-center justify-center min-h-screen">
+            <div class="container mx-auto px-4">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">Bed Management Platform<br>BMP</h1>
+                <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">
+                    Aplicación Interactiva para la Optimización de la Gestión de Camas en el Hospital Clínico Félix Bulnes.
+                </p>
+                <a href="#desafio" class="bg-white text-blue-700 font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-gray-100 transition duration-300">
+                    Más Información
+                </a>
+            </div>
         </section>
 
-        <section id="desafio" class="py-16 bg-white">
-            <h2 class="section-title text-3xl text-center mb-12">El Desafío Actual - Una Oportunidad de Mejora Urgente</h2>
-            <p class="text-lg text-gray-700 text-center mb-10 max-w-3xl mx-auto">
-                La gestión actual de camas en el hospital presenta varias áreas críticas que impactan la eficiencia operativa y la calidad de la atención al paciente. Identificar estos desafíos es el primer paso hacia una transformación significativa.
-            </p>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="card p-6"> <div class="text-5xl mb-4 accent-blue-light">👥</div>
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Coordinación Fragmentada de Movimientos</h3>
-                    <p class="text-gray-600 text-sm">La ausencia de un canal único obliga a convocar reuniones físicas periódicas entre unidades, lo que retrasa la toma de decisiones y la asignación de camas.</p>
-                </div>
-                <div class="card p-6"> <div class="text-5xl mb-4 accent-blue-light">📝📞</div>
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Dependencia de Procesos Manuales y Comunicaciones Ad Hoc</h3>
-                    <p class="text-gray-600 text-sm">Los responsables de cada servicio intercambian información por llamadas, correos o mensajería instantánea, aumentando el riesgo de pérdidas de datos y malentendidos.</p>
-                </div>
-                <div class="card p-6"> <div class="text-5xl mb-4 accent-blue-light">📉🛏️</div>
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Gestión Reactiva de Altas Médicas</h3>
-                    <p class="text-gray-600 text-sm">No hay un mecanismo automatizado que anticipe las fechas de alta ni reserve camas de manera proactiva, provocando congestión cuando no hay previsión.</p>
-                </div>
-                <div class="card p-6"> <div class="text-5xl mb-4 accent-blue-light">❓📊</div>
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Visibilidad Parcial de la Capacidad Real</h3>
-                    <p class="text-gray-600 text-sm">Sin un dashboard unificado, las Subdirecciones y la Unidad de Gestión de Camas carecen de panorama global sobre ocupación y disponibilidad, dificultando la priorización y reasignación ágil de recursos.</p>
-                </div>
-                <div class="card p-6"> <div class="text-5xl mb-4 accent-blue-light">🤝</div>
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Desalineación de Roles y Responsabilidades</h3>
-                    <p class="text-gray-600 text-sm">En reuniones de coordinación no siempre están presentes todos los actores clave, lo que genera decisiones parciales y retrabajo operativo.</p>
-                </div>
-                <div class="card p-6"> <div class="text-5xl mb-4 accent-blue-light">🚨</div>
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Ineficiencia en la Gestión de Excepciones</h3>
-                    <p class="text-gray-600 text-sm">Situaciones como emergencias o cambios de último minuto requieren llamadas urgentes y replanificaciones manuales, con altos tiempos de respuesta.</p>
-                </div>
-            </div>
-            <p class="text-center text-xl italic text-gray-700 mt-12">"Cada minuto perdido en la gestión de camas impacta la atención al paciente y la eficiencia del hospital."</p>
-        </section>
-
-        <section id="solucion" class="py-16 bg-white">
-            <h2 class="section-title text-3xl text-center mb-12">Nuestra Solución</h2>
-            <p class="text-lg text-gray-700 text-center mb-10 max-w-3xl mx-auto">
-                La Bed Management Platform se propone como una solución integral para centralizar, optimizar y controlar la gestión de camas en tiempo real, transformando los desafíos actuales en oportunidades de eficiencia.
-            </p>
-            <div class="text-center mb-10">
-                <h3 class="text-2xl font-semibold accent-blue-dark mb-4">Objetivo del Proyecto</h3>
-                <ul class="list-disc list-inside inline-block text-left text-gray-700 space-y-2">
-                    <li>Reducir tiempos de espera, traslados y estancias hospitalarias.</li>
-                    <li>Centralizar la información en un dashboard de control de mando.</li>
-                    <li>Facilitar la toma de decisiones basada en datos en tiempo real.</li>
-                </ul>
-            </div>
-            <div class="card p-6 md:p-10 max-w-4xl mx-auto">
-                <h4 class="text-xl font-semibold accent-blue-dark text-center mb-8">Flujo de Interconexión con el Dashboard Central</h4>
-                <div class="linear-diagram-container">
-                    <div class="linear-node">Urgencia</div>
-                    <div class="linear-arrow"></div>
-                    <div class="linear-node">Servicios Hospitalizados</div>
-                    <div class="linear-arrow"></div>
-                    <div class="linear-node">Reunión de Cama</div>
-                    <div class="linear-arrow"></div>
-                    <div class="linear-node center-dashboard">BMP<br>Dashboard</div>
+        <section id="desafio" class="py-16 bg-gray-100 text-black">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="section-title">Desafío</h2>
+                <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
+                    La gestión actual de camas en el hospital presenta varias áreas críticas que impactan la eficiencia operativa y la calidad de la atención al paciente. Identificar estos desafíos es el primer paso hacia una transformación significativa.
+                </p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-6 text-left">
+                        <div class="text-5xl mb-4 accent-blue-light">👥</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Coordinación Fragmentada de Movimientos</h3>
+                        <p class="text-gray-600 text-sm">La ausencia de un canal único obliga a convocar reuniones físicas periódicas entre unidades, lo que retrasa la toma de decisiones y la asignación de camas.</p>
+                    </div>
+                    <div class="card p-6 text-left">
+                        <div class="text-5xl mb-4 accent-blue-light">📝📞</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Dependencia de Procesos Manuales y Comunicaciones Ad Hoc</h3>
+                        <p class="text-gray-600 text-sm">Los responsables de cada servicio intercambian información por llamadas, correos o mensajería instantánea, aumentando el riesgo de pérdidas de datos y malentendidos.</p>
+                    </div>
+                    <div class="card p-6 text-left">
+                        <div class="text-5xl mb-4 accent-blue-light">📉🛏️</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Gestión Reactiva de Altas Médicas</h3>
+                        <p class="text-gray-600 text-sm">No hay un mecanismo automatizado que anticipe las fechas de alta ni reserve camas de manera proactiva, provocando congestión cuando no hay previsión.</p>
+                    </div>
+                    <div class="card p-6 text-left">
+                        <div class="text-5xl mb-4 accent-blue-light">❓📊</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Visibilidad Parcial de la Capacidad Real</h3>
+                        <p class="text-gray-600 text-sm">Sin un dashboard unificado, las Subdirecciones y la Unidad de Gestión de Camas carecen de panorama global sobre ocupación y disponibilidad, dificultando la priorización y reasignación ágil de recursos.</p>
+                    </div>
+                    <div class="card p-6 text-left">
+                        <div class="text-5xl mb-4 accent-blue-light">🤝</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Desalineación de Roles y Responsabilidades</h3>
+                        <p class="text-gray-600 text-sm">En reuniones de coordinación no siempre están presentes todos los actores clave, lo que genera decisiones parciales y retrabajo operativo.</p>
+                    </div>
+                    <div class="card p-6 text-left">
+                        <div class="text-5xl mb-4 accent-blue-light">🚨</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Ineficiencia en la Gestión de Excepciones</h3>
+                        <p class="text-gray-600 text-sm">Situaciones como emergencias o cambios de último minuto requieren llamadas urgentes y replanificaciones manuales, con altos tiempos de respuesta.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="flujo" class="py-16 bg-white">
-            <h2 class="section-title text-3xl text-center mb-12">Flujo de Trabajo Optimizado con BMP</h2>
-            <p class="text-lg text-gray-700 text-center mb-10 max-w-3xl mx-auto">
-                La BMP rediseña el viaje del paciente, conectando cada etapa de manera eficiente. Haga clic en cada etapa para ver los detalles de cómo la BMP facilita el proceso.
-            </p>
-            <div class="max-w-5xl mx-auto">
-                <div id="workflowContainer">
-                    <div class="workflow-stage" data-stage="urgencia">
-                        <h4 class="text-lg font-semibold text-black flex items-center justify-center w-full">
-                            Urgencia
-                        </h4>
+        <section id="solucion" class="py-16 bg-white text-black">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="section-title">Solución</h2>
+                <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
+                    La Bed Management Platform (BMP) es una aplicación interactiva diseñada para optimizar la gestión de camas, reducir estancias hospitalarias, tiempos de espera y traslados entre servicios.
+                </p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">💡</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Interfaz Intuitiva y Centralizada</h3>
+                        <p class="text-gray-600 text-sm">Unifica la información de todas las unidades en un dashboard en tiempo real, accesible desde cualquier dispositivo.</p>
                     </div>
-                    <div class="workflow-details" id="details-urgencia">
-                        <img src="https://i.imgur.com/DSBhGr5.png" alt="Diagrama de Flujo de Trabajo Urgencia" class="w-full h-auto rounded-lg shadow-md" onerror="this.src='https://placehold.co/800x600/cccccc/333333?text=Error+Carga+Flujo+1'">
-                        <p><strong>Acciones BMP:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm space-y-1 text-black">
-                            <li>Registro digital de datos básicos del paciente.</li>
-                            <li>Alerta automática por tiempos de espera prolongados (ej. >300 min).</li>
-                            <li>Verificación de disponibilidad y lugar clínico en módulo SUA.</li>
-                            <li>Documentación de decisión (Hospitalizar / Alta).</li>
-                            <li>Si se hospitaliza: asignación provisional y notificación a Reunión de Camas.</li>
-                        </ul>
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">⚡</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Automatización de Procesos</h3>
+                        <p class="text-gray-600 text-sm">Desde la asignación de camas hasta la gestión de altas, la BMP automatiza tareas repetitivas, reduciendo errores y tiempos.</p>
                     </div>
-
-                    <div class="workflow-stage" data-stage="servicios-hospitalizados">
-                        <h4 class="text-lg font-semibold text-black flex items-center justify-center w-full">
-                            Servicios Hospitalizados
-                        </h4>
-                    </div>
-                    <div class="workflow-details" id="details-servicios-hospitalizados">
-                        <img src="https://i.imgur.com/fEA8GjE.png" alt="Diagrama de Flujo de Trabajo Servicios Hospitalizados" class="w-full h-auto rounded-lg shadow-md" onerror="this.src='https://placehold.co/800x600/cccccc/333333?text=Error+Carga+Flujo+2'">
-                        <p><strong>Acciones BMP:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm space-y-1 text-black">
-                            <li>Visibilidad de disponibilidad actualizada de camas para todos los asistentes.</li>
-                            <li>Visualización de requerimientos de traslado y pacientes pendientes.</li>
-                            <li>Propuesta de asignaciones basada en prioridad clínica y preparación de cama.</li>
-                            <li>Validación por coordinadores y asignación definitiva en la BMP.</li>
-                        </ul>
-                    </div>
-
-                    <div class="workflow-stage" data-stage="reunion-cama">
-                        <h4 class="text-lg font-semibold text-black flex items-center justify-center w-full">
-                            Reunión de Cama
-                        </h4>
-                    </div>
-                    <div class="workflow-details" id="details-reunion-cama">
-                        <img src="https://i.imgur.com/88LUzi3.png" alt="Diagrama de Flujo de Trabajo Reunión de Camas" class="w-full h-auto rounded-lg shadow-md" onerror="this.src='https://placehold.co/800x600/cccccc/333333?text=Error+Carga+Flujo+3'">
-                        <p><strong>Acciones BMP:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm space-y-1 text-black">
-                            <li>Registro EME-GRD de avances clínicos, hitos y tiempos de procedimientos.</li>
-                            <li>Alertas tempranas por demoras (exámenes, Interconsultas) según umbrales GRD.</li>
-                            <li>Supervisión de alertas por Médico Gestor.</li>
-                            <li>Actualización del plan de egreso y fecha de alta/traslado en la BMP.</li>
-                            <li>Generación de reportes automáticos de movimientos.</li>
-                        </ul>
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">📈</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Análisis y Reportes Avanzados</h3>
+                        <p class="text-600 text-sm">Genera informes detallados sobre la ocupación, rotación de camas y eficiencia operativa para la toma de decisiones estratégicas.</p>
                     </div>
                 </div>
-                <p class="text-center text-lg italic text-black mt-10">"La BMP integra cada paso, asegurando información consistente y acciones coordinadas."</p>
             </div>
         </section>
 
-        <section id="beneficios" class="py-16 bg-white">
-            <h2 class="section-title text-3xl text-center mb-12 accent-blue-dark">Impacto Medible: Beneficios Concretos y KPIs Clave</h2>
-            <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
-                La implementación de la BMP no solo moderniza procesos, sino que también genera beneficios tangibles y medibles, cruciales para la toma de decisiones estratégicas y la mejora continua de la calidad asistencial.
-            </p>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                <div class="card p-6">
-                    <div class="text-4xl accent-blue-light mb-3">⏱️</div>
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Tiempo de Asignación de Cama</h3>
-                    <p class="text-gray-600 text-sm">Reducción del 30%.</p>
-                </div>
-                <div class="card p-6">
-                    <div class="text-4xl accent-blue-light mb-3">🗓️✔️</div>
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Cumplimiento de Plazos de Alta</h3>
-                    <p class="text-gray-600 text-sm">Meta del 90% de cumplimiento.</p>
-                </div>
-                <div class="card p-6">
-                    <div class="text-4xl accent-blue-light mb-3">↔️</div>
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Tiempo en Traslados Internos</h3>
-                    <p class="text-gray-600 text-sm">Reducción del 50%.</p>
-                </div>
-                <div class="card p-6">
-                    <div class="text-4xl accent-blue-light mb-3">📊📈</div>
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Visibilidad Integral</h3>
-                    <p class="text-gray-600 text-sm">Dashboard para decisiones informadas y proactivas.</p>
-                </div>
-                <div class="card p-6">
-                    <div class="text-4xl accent-blue-light mb-3">⚙️</div>
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Automatización</h3>
-                    <p class="text-gray-600 text-sm">Alertas, recordatorios, optimización de flujos.</p>
-                </div>
-                <div class="card p-6">
-                    <div class="text-4xl accent-blue-light mb-3">🔍🔒</div>
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Trazabilidad y Seguridad</h3>
-                    <p class="text-gray-600 text-sm">Registro de acciones, cumplimiento normativo.</p>
+        <section id="impacto" class="py-16 bg-gray-100 text-black">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="section-title">Impacto Esperado</h2>
+                <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
+                    La implementación de la BMP generará beneficios tangibles en la eficiencia operativa, la experiencia del paciente y la sostenibilidad financiera del hospital.
+                </p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">⏱️</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Reducción de Tiempos</h3>
+                        <p class="text-gray-600 text-sm">Disminución en los tiempos de espera para asignación de camas y traslados internos.</p>
+                    </div>
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">⭐</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Mejora de la Experiencia del Paciente</h3>
+                        <p class="text-gray-600 text-sm">Menos demoras y una gestión más fluida se traducen en mayor satisfacción.</p>
+                    </div>
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">💰</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Optimización de Recursos</h3>
+                        <p class="text-gray-600 text-sm">Uso más eficiente de las camas y personal, reduciendo costos operativos.</p>
+                    </div>
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">✅</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Cumplimiento Normativo</h3>
+                        <p class="text-gray-600 text-sm">Facilita el cumplimiento de regulaciones y estándares de calidad en la gestión hospitalaria.</p>
+                    </div>
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">📊</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Decisiones Basadas en Datos</h3>
+                        <p class="text-gray-600 text-sm">Acceso a información en tiempo real para decisiones más informadas y estratégicas.</p>
+                    </div>
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">🤝</div>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Colaboración Mejorada</h3>
+                        <p class="text-gray-600 text-sm">Promueve una comunicación fluida entre los diferentes departamentos y equipos.</p>
+                    </div>
                 </div>
             </div>
-            <div class="card p-6">
-                <h3 class="text-xl font-semibold accent-blue-dark text-center mb-4">Visualización de Mejoras Esperadas</h3>
-                <div class="chart-container">
+        </section>
+
+        <section id="workflow" class="py-16 bg-white text-black">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="section-title">Flujo de Trabajo (Workflow)</h2>
+                <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
+                    La BMP simplifica y optimiza el proceso de gestión de camas, desde la solicitud hasta el alta del paciente.
+                </p>
+                <div class="max-w-3xl mx-auto flex flex-wrap justify-center items-center gap-6">
+                    <div class="workflow-step-circle">
+                        1. Ingreso y decisión inicial en Urgencias
+                    </div>
+                    <svg class="w-8 h-8 text-blue-700 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    <div class="workflow-step-circle">
+                        2. Reunión de Camas (Coordinación UGP)
+                    </div>
+                    <svg class="w-8 h-8 text-blue-700 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    <div class="workflow-step-circle">
+                        3. Seguimiento del paciente hospitalizado
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-8 border-t border-gray-200 text-left">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-4">Usuarios Clave</h3>
+                    <p class="text-gray-700 mb-4">Para la adecuada implementación de la BMP, se identificarán y coordinarán los siguientes usuarios clave, quienes serán responsables de interactuar con la plataforma en cada etapa del flujo de hospitalización:</p>
+                    
+                    <div class="max-w-3xl mx-auto">
+                        <div class="user-collapsible-stage" data-role="medico-gestor">
+                            <h4 class="text-xl font-semibold text-blue-700 flex items-center justify-between w-full">
+                                Médico Gestor
+                                <span class="text-gray-600">
+                                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </span>
+                            </h4>
+                        </div>
+                        <div id="details-medico-gestor" class="user-collapsible-details text-left">
+                            <p class="text-gray-700 mb-2">Supervisa alertas en su tablero, coordina con el médico tratante la confirmación de fecha de alta o traslado y actualiza el plan de egreso según diagnostico GRD y su EME en la BMP.</p>
+                        </div>
+
+                        <div class="user-collapsible-stage" data-role="medico-residente-urgencia">
+                            <h4 class="text-xl font-semibold text-blue-700 flex items-center justify-between w-full">
+                                Médico Residente de Urgencia
+                                <span class="text-gray-600">
+                                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </span>
+                            </h4>
+                        </div>
+                        <div id="details-medico-residente-urgencia" class="user-collapsible-details text-left">
+                            <p class="text-gray-700 mb-2">Recibe reportes automáticos del turno, revisa alertas y tiempos de espera, registra el diagnóstico de salida de Urgencias y documenta en la BMP la decisión de hospitalizar o dar alta.</p>
+                        </div>
+
+                        <div class="user-collapsible-stage" data-role="medico-residente-servicio">
+                            <h4 class="text-xl font-semibold text-blue-700 flex items-center justify-between w-full">
+                                Médico Residente de Servicio
+                                <span class="text-gray-600">
+                                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </span>
+                            </h4>
+                        </div>
+                        <div id="details-medico-residente-servicio" class="user-collapsible-details text-left">
+                            <p class="text-gray-700 mb-2">Genera reportes automáticos de movimientos y verifica que cada alta, traslado o excepción quede registrada, alimentando a su vez el siguiente encuentro de Reunión de Camas.</p>
+                        </div>
+
+                        <div class="user-collapsible-stage" data-role="enfermero-gestor-flujo">
+                            <h4 class="text-xl font-semibold text-blue-700 flex items-center justify-between w-full">
+                                Enfermero Gestor de Flujo
+                                <span class="text-gray-600">
+                                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </span>
+                            </h4>
+                        </div>
+                        <div id="details-enfermero-gestor-flujo" class="user-collapsible-details text-left">
+                            <p class="text-gray-700 mb-2">Visualiza en el tablero las alertas de espera (por ejemplo, si sobrepasa 300 min) y verifica contra el módulo de “SUA” la disponibilidad de camas y el lugar clínico de hospitalización.</p>
+                        </div>
+
+                        <div class="user-collapsible-stage" data-role="enfermero-jefe-turno-hospitalario-urgencia">
+                            <h4 class="text-xl font-semibold text-blue-700 flex items-center justify-between w-full">
+                                Enfermero Jefe de Turno Hospitalario de Urgencia
+                                <span class="text-gray-600">
+                                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </span>
+                            </h4>
+                        </div>
+                        <div id="details-enfermero-jefe-turno-hospitalario-urgencia" class="user-collapsible-details text-left">
+                            <p class="text-gray-700 mb-2">Captura en la BMP los datos básicos del paciente (motivo de ingreso, signos vitales) mediante un formulario electrónico y asiste en la decisión inicial de hospitalización.</p>
+                        </div>
+
+                        <div class="user-collapsible-stage" data-role="enfermero-jefe-turno-servicio">
+                            <h4 class="text-xl font-semibold text-blue-700 flex items-center justify-between w-full">
+                                Enfermero Jefe de Turno de Servicio
+                                <span class="text-gray-600">
+                                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </span>
+                            </h4>
+                        </div>
+                        <div id="details-enfermero-jefe-turno-servicio" class="user-collapsible-details text-left">
+                            <p class="text-gray-700 mb-2">Genera reportes automáticos de movimientos y verifica que cada alta, traslado o excepción quede registrada. Cuando el paciente se da de alta o se traslada, agrega al sistema notificación estado de la cama (Lista, Espera ambulancia, en aseos), la BMP marca la cama disponible y reinicia el ciclo de asignación.</p>
+                        </div>
+
+                        <div class="user-collapsible-stage" data-role="enfermero-gestor-ugp">
+                            <h4 class="text-xl font-semibold text-blue-700 flex items-center justify-between w-full">
+                                Enfermero Gestor (Unidad de Gestión de Pacientes)
+                                <span class="text-gray-600">
+                                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </span>
+                            </h4>
+                        </div>
+                        <div id="details-enfermero-gestor-ugp" class="user-collapsible-details text-left">
+                            <p class="text-gray-700 mb-2">Se convoca periódicamente al Enfermero Gestor (UGP), al equipo de Urgencias y a representantes de los servicios hospitalarios para una sesión de asignación, consultando la disponibilidad de camas y validando asignaciones definitivas.</p>
+                        </div>
+
+                        <div class="user-collapsible-stage" data-role="enfermera-navegadora">
+                            <h4 class="text-xl font-semibold text-blue-700 flex items-center justify-between w-full">
+                                Enfermera Navegadora (Continuidad de Piso)
+                                <span class="text-gray-600">
+                                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </span>
+                            </h4>
+                        </div>
+                        <div id="details-enfermera-navegadora" class="user-collapsible-details text-left">
+                            <p class="text-gray-700 mb-2">Utiliza el módulo EME‑GRD para registrar diariamente avances clínicos, hitos de rehabilitación y tiempos de procedimientos, generando alertas tempranas si algún indicador GRD supera el umbral definido.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="flujos-detallados" class="py-16 bg-gray-100 text-black">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="section-title">Flujos Detallados</h2>
+                <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
+                    A continuación, se presentan los diagramas de flujo detallados para los procesos de Urgencia, Servicios Hospitalizados y Reunión de Camas.
+                </p>
+                <div class="flex flex-col items-center space-y-8">
+                    <div class="w-full max-w-4xl bg-white p-4 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-4">Flujo de Urgencia</h3>
+                        <img src="https://i.imgur.com/DSBhGr5.png" alt="Flujo de Urgencia" class="w-full h-auto rounded-lg" onerror="this.src='https://placehold.co/800x450/cccccc/333333?text=Imagen+no+disponible'">
+                    </div>
+                    <div class="w-full max-w-4xl bg-white p-4 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-4">Flujo de Servicios Hospitalizados</h3>
+                        <img src="https://i.imgur.com/fEA8GjE.png" alt="Flujo de Servicios Hospitalizados" class="w-full h-auto rounded-lg" onerror="this.src='https://placehold.co/800x450/cccccc/333333?text=Imagen+no+disponible'">
+                    </div>
+                    <div class="w-full max-w-4xl bg-white p-4 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-4">Flujo de Reunión de Camas</h3>
+                        <img src="https://i.imgur.com/88LUzi3.png" alt="Flujo de Reunión de Camas" class="w-full h-auto rounded-lg" onerror="this.src='https://placehold.co/800x450/cccccc/333333?text=Imagen+no+disponible'">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="visualizacion-mejoras" class="py-16 bg-white text-black">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="section-title">Visualización de Mejoras</h2>
+                <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
+                    La implementación de la BMP no solo moderniza procesos, sino que también genera beneficios tangibles y medibles, cruciales para la toma de decisiones estratégicas y la mejora continua de la calidad asistencial.
+                </p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">⏱️</div> <h3 class="text-xl font-semibold text-blue-700 mb-2">Tiempo de Asignación de Cama</h3>
+                        <p class="text-gray-600 text-sm">Reducción del 30%.</p>
+                    </div>
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">✅</div> <h3 class="text-xl font-semibold text-blue-700 mb-2">Cumplimiento de Plazos de Alta</h3>
+                        <p class="text-gray-600 text-sm">Meta del 90% de cumplimiento.</p>
+                    </div>
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">↔️</div> <h3 class="text-xl font-semibold text-blue-700 mb-2">Tiempo en Traslados Internos</h3>
+                        <p class="text-gray-600 text-sm">Reducción del 50%.</p>
+                    </div>
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">📊</div> <h3 class="text-xl font-semibold text-blue-700 mb-2">Visibilidad Integral</h3>
+                        <p class="text-gray-600 text-sm">Dashboard para decisiones informadas y proactivas.</p>
+                    </div>
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">⚙️</div> <h3 class="text-xl font-semibold text-blue-700 mb-2">Automatización</h3>
+                        <p class="text-gray-600 text-sm">Alertas, recordatorios, optimización de flujos.</p>
+                    </div>
+                    <div class="card p-6">
+                        <div class="text-5xl mb-4 accent-blue-light">🔒</div> <h3 class="text-xl font-semibold text-blue-700 mb-2">Trazabilidad y Seguridad</h3>
+                        <p class="text-gray-600 text-sm">Registro de acciones, cumplimiento normativo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="kpis" class="py-16 bg-gray-100 text-black">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="section-title">KPIs Clave y Metas</h2>
+                <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
+                    La BMP permitirá monitorear y mejorar indicadores clave de rendimiento, asegurando una gestión más eficiente y una atención de calidad.
+                </p>
+                <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
                     <canvas id="kpiChart"></canvas>
                 </div>
-                <p class="text-sm text-black text-center mt-4">Gráfico ilustrativo de las metas de mejora porcentual en indicadores clave.</p>
             </div>
         </section>
 
-        <section id="implementacion" class="py-16 bg-white">
-            <h2 class="section-title text-3xl text-center mb-12">Modelo de Implementación Recomendado</h2>
-            <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
-                Tras un análisis exhaustivo, se recomienda la Opción 2: Desarrollo Interno Especializado. Esta estrategia ofrece el balance óptimo entre control, adaptabilidad y sostenibilidad a largo plazo para el hospital.
-            </p>
-            <div class="card p-8 max-w-3xl mx-auto bg-white">
-                <h3 class="text-2xl font-semibold accent-blue-dark text-center mb-6">La Estrategia Óptima: Desarrollo Interno Especializado (Opción 2)</h3>
-                <ul class="space-y-4">
-                    <li class="flex items-start">
-                        <span class="text-3xl mr-3 accent-blue-light">🎛️</span>
-                        <div>
-                            <h4 class="font-semibold accent-blue-dark">Control Total</h4>
-                            <p class="text-black text-sm">Adaptación precisa a nuestras necesidades actuales y evolución futura de la plataforma.</p>
+        <section id="plan-accion" class="py-16 bg-white text-black">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="section-title">Plan de Acción</h2>
+                <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
+                    Presentamos una hoja de ruta clara y concisa para la implementación de la BMP, estimada en 6 meses. Cada fase tiene objetivos y entregables definidos para asegurar un progreso medible y eficiente.
+                </p>
+                <div class="max-w-3xl mx-auto">
+                    <div id="timelineContainer">
+                        <div class="timeline-stage" data-stage="fase1">
+                            <h4 class="text-xl font-semibold text-black flex items-center justify-center w-full">
+                                Fase 1: Diseño Conceptual <span class="text-sm font-normal text-black ml-2">(2 Semanas)</span>
+                                <span class="ml-auto text-gray-600">
+                                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </span>
+                            </h4>
                         </div>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="text-3xl mr-3 accent-blue-light">🛡️</span>
-                        <div>
-                            <h4 class="font-semibold accent-blue-dark">Seguridad y Cumplimiento</h4>
-                            <p class="text-black text-sm">Máxima protección de datos sensibles (Leyes 19.628, 20.584) y normativas internas.</p>
+                        <div id="details-fase1" class="timeline-details text-left">
+                            <p class="text-gray-700 mb-2">Definición de requisitos, diseño de la arquitectura y prototipado inicial.</p>
+                            <ul class="list-disc list-inside text-gray-600">
+                                <li>Reuniones con stakeholders.</li>
+                                <li>Documento de requisitos funcionales y no funcionales.</li>
+                                <li>Maquetas de interfaz de usuario.</li>
+                            </ul>
                         </div>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="text-3xl mr-3 accent-blue-light">🧠</span>
-                        <div>
-                            <h4 class="font-semibold accent-blue-dark">Conocimiento Interno (Sostenibilidad)</h4>
-                            <p class="text-black text-sm">Desarrollo de capacidades internas y menor dependencia de proveedores externos a largo plazo.</p>
+
+                        <div class="timeline-stage" data-stage="fase2">
+                            <h4 class="text-xl font-semibold text-black flex items-center justify-center w-full">
+                                Fase 2: Desarrollo y Pruebas <span class="text-sm font-normal text-black ml-2">(12 Semanas)</span>
+                                <span class="ml-auto text-gray-600">
+                                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </span>
+                            </h4>
                         </div>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="text-3xl mr-3 accent-blue-light">🪜</span>
-                        <div>
-                            <h4 class="font-semibold accent-blue-dark">Escalabilidad Robusta</h4>
-                            <p class="text-black text-sm">Plataforma preparada para el crecimiento del hospital y futuras integraciones con otros sistemas.</p>
+                        <div id="details-fase2" class="timeline-details text-left">
+                            <p class="text-gray-700 mb-2">Construcción del sistema, integración de módulos y ciclos de pruebas internos.</p>
+                            <ul class="list-disc list-inside text-gray-600">
+                                <li>Desarrollo de backend y frontend.</li>
+                                <li>Pruebas unitarias y de integración.</li>
+                                <li>Iteraciones de desarrollo ágil.</li>
+                            </ul>
                         </div>
-                    </li>
-                </ul>
-                <p class="text-center text-lg italic text-black mt-8">"Una inversión estratégica en autonomía, calidad y la capacidad de adaptación del Hospital."</p>
-            </div>
-        </section>
 
-        <section id="plan" class="py-16 bg-white">
-            <h2 class="section-title text-3xl text-center mb-12 accent-blue-dark">Plan de Acción y Cronograma (Simplificado)</h2>
-            <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
-                Presentamos una hoja de ruta clara y concisa para la implementación de la BMP, estimada en 6 meses. Cada fase tiene objetivos y entregables definidos para asegurar un progreso medible y eficiente.
-            </p>
-            <div class="card p-8 max-w-3xl mx-auto bg-white">
-                <div id="timelineContainer">
-                    <div class="timeline-stage" data-stage="fase1">
-                        <h4 class="text-xl font-semibold text-black flex items-center justify-center w-full">
-                            Fase 1: Diseño Conceptual <span class="text-sm font-normal text-black ml-2">(2 Semanas)</span>
-                        </h4>
-                    </div>
-                    <div class="timeline-details" id="details-fase1">
-                        <p class="text-black">Talleres de requerimientos, validación de flujos, especificaciones funcionales.</p>
-                    </div>
+                        <div class="timeline-stage" data-stage="fase3">
+                            <h4 class="text-xl font-semibold text-black flex items-center justify-center w-full">
+                                Fase 3: Capacitación y Piloto <span class="text-sm font-normal text-black ml-2">(6 Semanas)</span>
+                                <span class="ml-auto text-gray-600">
+                                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </span>
+                            </h4>
+                        </div>
+                        <div id="details-fase3" class="timeline-details text-left">
+                            <p class="text-gray-700 mb-2">Entrenamiento a usuarios clave y fase de prueba piloto en un área controlada.</p>
+                            <ul class="list-disc list-inside text-gray-600">
+                                <li>Material de capacitación.</li>
+                                <li>Sesiones de entrenamiento.</li>
+                                <li>Monitoreo y feedback del piloto.</li>
+                            </ul>
+                        </div>
 
-                    <div class="timeline-stage" data-stage="fase2">
-                        <h4 class="text-xl font-semibold text-black flex items-center justify-center w-full">
-                            Fase 2: Desarrollo del Prototipo <span class="text-sm font-normal text-black ml-2">(6 Semanas)</span>
-                        </h4>
-                    </div>
-                    <div class="timeline-details" id="details-fase2">
-                        <p class="text-black">Configuración inicial, desarrollo de módulos críticos, pruebas unitarias.</p>
-                    </div>
-
-                    <div class="timeline-stage" data-stage="fase3">
-                        <h4 class="text-xl font-semibold text-black flex items-center justify-center w-full">
-                            Fase 3: Prueba Piloto <span class="text-sm font-normal text-black ml-2">(4 Semanas)</span>
-                        </h4>
-                    </div>
-                    <div class="timeline-details" id="details-fase3">
-                        <p class="text-black">Despliegue en servicio seleccionado, capacitación, monitoreo de KPIs iniciales.</p>
-                    </div>
-
-                    <div class="timeline-stage" data-stage="fase4">
-                        <h4 class="text-xl font-semibold text-black flex items-center justify-center w-full">
-                            Fase 4: Implementación Hospitalaria <span class="text-sm font-normal text-black ml-2">(8 Semanas)</span>
-                        </h4>
-                    </div>
-                    <div class="timeline-details" id="details-fase4">
-                        <p class="text-black">Despliegue progresivo, formación general, comité de seguimiento.</p>
-                    </div>
-
-                    <div class="timeline-stage" data-stage="fase5">
-                        <h4 class="text-xl font-semibold text-black flex items-center justify-center w-full">
-                            Fase 5: Optimización y Escalamiento <span class="text-sm font-normal text-black ml-2">(4 Semanas)</span>
-                        </h4>
-                    </div>
-                    <div class="timeline-details" id="details-fase5">
-                        <p class="text-black">Análisis de datos, mejoras, documentación final, plan de sostenibilidad.</p>
+                        <div class="timeline-stage" data-stage="fase4">
+                            <h4 class="text-xl font-semibold text-black flex items-center justify-center w-full">
+                                Fase 4: Despliegue y Monitoreo <span class="text-sm font-normal text-black ml-2">(4 Semanas)</span>
+                                <span class="ml-auto text-gray-600">
+                                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </span>
+                            </h4>
+                        </div>
+                        <div id="details-fase4" class="timeline-details text-left">
+                            <p class="text-gray-700 mb-2">Lanzamiento oficial de la plataforma y seguimiento continuo de su rendimiento.</p>
+                            <ul class="list-disc list-inside text-gray-600">
+                                <li>Soporte post-lanzamiento.</li>
+                                <li>Recopilación de métricas de uso.</li>
+                                <li>Ajustes y optimizaciones.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <p class="text-center text-sm italic text-black mt-8">"Cronograma detallado disponible en el informe completo."</p>
-        </section>
-
-        <section id="accion" class="py-16 bg-white">
-            <h2 class="section-title text-3xl text-center mb-12">Llamado a la Acción<br>Su Decisión es Clave</h2>
-            <p class="text-lg text-black text-center mb-10 max-w-3xl mx-auto">
-                Para transformar la gestión de camas y materializar los beneficios presentados, solicitamos su aprobación en los siguientes puntos cruciales. Su respaldo es fundamental para iniciar este proyecto estratégico.
-            </p>
-            <div class="card p-8 max-w-2xl mx-auto bg-white">
-                <h3 class="text-2xl font-semibold accent-blue-dark text-center mb-6">Solicitudes Claras para Aprobación</h3>
-                <ul class="space-y-4">
-                    <li class="flex items-start">
-                        <span class="text-3xl mr-3 accent-blue-light">✅</span>
-                        <p class="text-black">Aprobar la conformación del equipo técnico interno especializado (Líder técnico, coordinadores, analistas).</p>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="text-3xl mr-3 accent-blue-light">✅</span>
-                        <p class="text-black">Autorizar la liberación de tiempos operativos para roles clave (Dedicación exclusiva/parcial).</p>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="text-3xl mr-3 accent-blue-light">✅</span>
-                        <p class="text-black">Validar el presupuesto detallado por hitos (Contratación, capacitación, licencias, herramientas).</p>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="text-3xl mr-3 accent-blue-light">✅</span>
-                        <p class="text-black">Establecer un comité de gestión y mecanismo de seguimiento (Representación TI, GRD, Subdirecciones; KPIs semanales).</p>
-                    </li>
-                </ul>
             </div>
         </section>
 
         <section id="conclusion" class="py-16 bg-white text-black">
-            <div class="card p-8 max-w-3xl mx-auto bg-white">
+            <div class="max-w-3xl mx-auto text-center">
                 <h2 class="text-3xl font-bold mb-6">Conclusión<br>Juntos Hacia el Futuro de la Gestión Hospitalaria</h2>
                 <p class="text-xl mb-8">
                     "La Bed Management Platform no es solo una herramienta tecnológica; es una inversión en la calidad de atención, la optimización de nuestros recursos y el fortalecimiento de la posición del Hospital Clínico Félix Bulnes como referente en innovación."
@@ -710,229 +674,165 @@
         <p>&copy; 2024 Hospital Clínico Félix Bulnes. Proyecto Bed Management Platform.</p>
     </footer>
 
-    <div id="imageModal" class="modal">
-        <span class="modal-close">&times;</span>
-        <img class="modal-content" id="modalImage">
-    </div>
-
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            console.log('DOM completamente cargado y parseado.');
-
-            // Smooth scrolling for navigation links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        targetElement.scrollIntoView({
-                            behavior: 'smooth'
-                        });
-                    }
-                    const mobileMenu = document.getElementById('mobileMenu');
-                    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
-                        mobileMenu.classList.add('hidden');
-                    }
-                });
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+                if (document.getElementById('mobileMenu').classList.contains('hidden') === false) {
+                    document.getElementById('mobileMenu').classList.add('hidden');
+                }
             });
+        });
 
-            // Mobile menu toggle
-            const mobileMenuButton = document.getElementById('mobileMenuButton');
-            const mobileMenu = document.getElementById('mobileMenu');
-            if (mobileMenuButton && mobileMenu) {
-                mobileMenuButton.addEventListener('click', () => {
-                    console.log('Clic en botón de menú móvil');
-                    mobileMenu.classList.toggle('hidden');
-                });
-            }
-            
-            // Workflow stages (Flujo de Trabajo Optimizado) expand/collapse
-            const workflowStages = document.querySelectorAll('.workflow-stage');
-            console.log('Workflow stages found:', workflowStages.length);
-            workflowStages.forEach(stage => {
-                stage.addEventListener('click', () => {
-                    console.log('Clic en etapa de flujo:', stage.dataset.stage);
-                    const stageId = stage.dataset.stage;
-                    const detailsElement = document.getElementById(`details-${stageId}`);
-                    console.log('Details element for workflow stage:', detailsElement);
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
 
-                    // Close other open workflow details
-                    document.querySelectorAll('.workflow-details.active').forEach(activeDetail => {
-                        if (activeDetail !== detailsElement) {
-                            console.log('Collapsing other workflow detail:', activeDetail.id);
-                            activeDetail.classList.remove('active');
-                            activeDetail.style.maxHeight = '0px'; // Explicitly set to 0px
-                            activeDetail.style.padding = '0 1.5rem';
-                        }
-                    });
-                    // Deactivate other active workflow stages
-                    document.querySelectorAll('.workflow-stage.active').forEach(activeStage => {
-                        if (activeStage !== stage) {
-                            console.log('Deactivating other workflow stage:', activeStage.dataset.stage);
-                            activeStage.classList.remove('active');
-                        }
-                    });
+        // Script para la interactividad de los Usuarios Clave (ahora desplegables)
+        const userCollapsibleStages = document.querySelectorAll('.user-collapsible-stage');
+        userCollapsibleStages.forEach(stage => {
+            stage.addEventListener('click', () => {
+                const roleId = stage.dataset.role;
+                const detailsElement = document.getElementById(`details-${roleId}`);
 
-                    // Toggle current stage and details
-                    stage.classList.toggle('active');
-                    if (detailsElement.classList.contains('active')) { // Check if it's now active
-                        console.log('Expanding workflow detail:', detailsElement.id, 'scrollHeight:', detailsElement.scrollHeight);
-                        detailsElement.style.maxHeight = detailsElement.scrollHeight + "px"; // Expand
-                        detailsElement.style.padding = '1.5rem'; // Restore padding
-                    } else {
-                        console.log('Collapsing workflow detail:', detailsElement.id);
-                        detailsElement.style.maxHeight = '0px'; // Collapse
-                        detailsElement.style.padding = '0 1.5rem'; // Collapse padding
+                document.querySelectorAll('.user-collapsible-details.active').forEach(activeDetail => {
+                    if (activeDetail !== detailsElement) {
+                        activeDetail.classList.remove('active');
+                        activeDetail.style.maxHeight = null;
+                        activeDetail.previousElementSibling.classList.remove('active'); // Remove active from previous stage
                     }
                 });
-            });
-
-            // Timeline stages (Plan de Acción y Cronograma) expand/collapse
-            const timelineStages = document.querySelectorAll('.timeline-stage');
-            console.log('Timeline stages found:', timelineStages.length);
-            timelineStages.forEach(stage => {
-                stage.addEventListener('click', () => {
-                    console.log('Clic en etapa de cronograma:', stage.dataset.stage);
-                    const stageId = stage.dataset.stage;
-                    const detailsElement = document.getElementById(`details-${stageId}`);
-                    console.log('Details element for timeline stage:', detailsElement);
-
-                    // Close other open timeline details
-                    document.querySelectorAll('.timeline-details.active').forEach(activeDetail => {
-                        if (activeDetail !== detailsElement) {
-                            console.log('Collapsing other timeline detail:', activeDetail.id);
-                            activeDetail.classList.remove('active');
-                            activeDetail.style.maxHeight = '0px'; // Explicitly set to 0px
-                            activeDetail.style.padding = '0 1.5rem';
-                        }
-                    });
-                    // Deactivate other active timeline stages
-                    document.querySelectorAll('.timeline-stage.active').forEach(activeStage => {
-                        if (activeStage !== stage) {
-                            console.log('Deactivating other timeline stage:', activeStage.dataset.stage);
-                            activeStage.classList.remove('active');
-                        }
-                    });
-
-                    // Toggle current stage and details
-                    stage.classList.toggle('active');
-                    if (detailsElement.classList.contains('active')) { // Check if it's now active
-                        console.log('Expanding timeline detail:', detailsElement.id, 'scrollHeight:', detailsElement.scrollHeight);
-                        detailsElement.style.maxHeight = detailsElement.scrollHeight + "px"; // Expand
-                        detailsElement.style.padding = '1.5rem'; // Restore padding
-                    } else {
-                        console.log('Collapsing timeline detail:', detailsElement.id);
-                        detailsElement.style.maxHeight = '0px'; // Collapse
-                        detailsElement.style.padding = '0 1.5rem'; // Collapse padding
+                document.querySelectorAll('.user-collapsible-stage.active').forEach(activeStage => {
+                    if (activeStage !== stage) {
+                        activeStage.classList.remove('active');
                     }
                 });
-            });
 
-            // Chart.js initialization
-            const kpiCtx = document.getElementById('kpiChart').getContext('2d');
-            const kpiChart = new Chart(kpiCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Tiempo Asignación Cama', 'Cumplimiento Plazos Alta', 'Tiempo Traslados Internos'],
-                    datasets: [{
-                        label: 'Mejora Esperada (%)',
-                        data: [30, 90, 50],
-                        backgroundColor: [
-                            'rgba(0, 123, 255, 0.7)',
-                            'rgba(0, 123, 255, 0.7)',
-                            'rgba(0, 123, 255, 0.7)'
-                        ],
-                        borderColor: [
-                            'rgba(0, 123, 255, 1)',
-                            'rgba(0, 123, 255, 1)',
-                            'rgba(0, 123, 255, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Porcentaje de Mejora / Cumplimiento',
-                                color: '#000000'
-                            },
-                            ticks: {
-                                callback: function(value) {
-                                    return value + "%"
-                                },
-                                color: '#000000'
-                            },
-                            grid: {
-                                display: false
-                            }
+                stage.classList.toggle('active');
+                if (detailsElement.classList.contains('active')) {
+                    detailsElement.classList.remove('active');
+                    detailsElement.style.maxHeight = null;
+                } else {
+                    detailsElement.classList.add('active');
+                    detailsElement.style.maxHeight = detailsElement.scrollHeight + "px";
+                }
+            });
+        });
+
+        // Script para la interactividad del plan de acción (timeline stages) - sin cambios
+        const timelineStages = document.querySelectorAll('.timeline-stage');
+        timelineStages.forEach(stage => {
+            stage.addEventListener('click', () => {
+                const stageId = stage.dataset.stage;
+                const detailsElement = document.getElementById(`details-${stageId}`);
+
+                document.querySelectorAll('.timeline-details.active').forEach(activeDetail => {
+                    if (activeDetail !== detailsElement) {
+                        activeDetail.classList.remove('active');
+                        activeDetail.style.maxHeight = null;
+                    }
+                });
+                document.querySelectorAll('.timeline-stage.active').forEach(activeStage => {
+                    if (activeStage !== stage) {
+                        activeStage.classList.remove('active');
+                    }
+                });
+
+                stage.classList.toggle('active');
+                if (detailsElement.classList.contains('active')) {
+                    detailsElement.classList.remove('active');
+                    detailsElement.style.maxHeight = null;
+                } else {
+                    detailsElement.classList.add('active');
+                    detailsElement.style.maxHeight = detailsElement.scrollHeight + "px";
+                }
+            });
+        });
+
+        const kpiCtx = document.getElementById('kpiChart').getContext('2d');
+        const kpiChart = new Chart(kpiCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Tiempo Asignación Cama', 'Cumplimiento Plazos Alta', 'Tiempo Traslados Internos'],
+                datasets: [{
+                    label: 'Mejora Esperada (%)',
+                    data: [30, 90, 50],
+                    backgroundColor: [
+                        'rgba(0, 123, 255, 0.7)', /* Tono azul para las barras */
+                        'rgba(0, 123, 255, 0.7)',
+                        'rgba(0, 123, 255, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(0, 123, 255, 1)', /* Azul más oscuro para los bordes */
+                        'rgba(0, 123, 255, 1)',
+                        'rgba(0, 123, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Porcentaje de Mejora / Cumplimiento',
+                            color: '#000000' /* Color de texto para el título del eje Y (negro) */
                         },
-                        x: {
-                            ticks: {
-                                color: '#000000'
+                        ticks: {
+                            callback: function(value) {
+                                return value + "%"
                             },
-                            grid: {
-                                display: false
-                            }
+                            color: '#000000' /* Color de texto para las etiquetas del eje Y (negro) */
+                        },
+                        grid: {
+                            display: false /* Eliminar las líneas de la cuadrícula del eje Y */
                         }
                     },
-                    plugins: {
-                        legend: {
-                            display: false
+                    x: {
+                        ticks: {
+                            color: '#000000' /* Color de texto para las etiquetas del eje X (negro) */
                         },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed.y !== null) {
-                                        if (context.label === 'Cumplimiento Plazos Alta') {
-                                            label += context.parsed.y + '% (Meta)';
-                                        } else {
-                                            label += context.parsed.y + '% Reducción';
-                                        }
-                                    }
-                                    return label;
+                        grid: {
+                            display: false /* Eliminar las líneas de la cuadrícula del eje X */
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
                                 }
+                                if (context.parsed.y !== null) {
+                                    if (context.label === 'Cumplimiento Plazos Alta') {
+                                        label += context.parsed.y + '% (Meta)';
+                                    } else {
+                                        label += context.parsed.y + '% Reducción';
+                                    }
+                                }
+                                return label;
                             }
                         }
                     }
                 }
-            });
-
-            // Modal functionality for images
-            const imageModal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('modalImage');
-            const modalClose = document.getElementsByClassName('modal-close')[0];
-            console.log('Modal elements found:', imageModal, modalImage, modalClose);
-
-            document.querySelectorAll('.workflow-details img').forEach(img => {
-                img.addEventListener('click', function(event) { // Added event parameter
-                    event.stopPropagation(); // Prevent click from bubbling to parent (workflow-details)
-                    console.log('Clic en imagen de flujo. Imagen src:', this.src);
-                    imageModal.classList.add('show');
-                    modalImage.src = this.src;
-                });
-            });
-
-            modalClose.addEventListener('click', function() {
-                console.log('Clic en cerrar modal');
-                imageModal.classList.remove('show');
-            });
-
-            imageModal.addEventListener('click', function(event) {
-                if (event.target === imageModal) {
-                    console.log('Clic fuera de la imagen en modal. Cerrando modal.');
-                    imageModal.classList.remove('show');
-                }
-            });
+            }
         });
     </script>
 </body>
